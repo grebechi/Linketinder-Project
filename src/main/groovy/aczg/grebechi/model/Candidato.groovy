@@ -7,6 +7,6 @@ class Candidato extends Pessoa {
 
     @Override
     String toString() {
-        return "Candidato: ${nome} | Idade: ${idade} | CPF: ${cpf} | Estado: ${estado} | Skills: ${competencias.join(', ')}"
+        return "Candidato: ${nome} | E-mail: ${email} | Idade: ${idade} | CPF: ${cpf} | Estado: ${estado} | Skills: ${competencias.join(', ')}"
     }
 }

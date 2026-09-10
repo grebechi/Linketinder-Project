@@ -2,17 +2,23 @@ package aczg.grebechi.view
 
 import aczg.grebechi.controller.CandidatoController
 import aczg.grebechi.controller.EmpresaController
+import aczg.grebechi.controller.MatchController
+import aczg.grebechi.controller.VagaController
 import aczg.grebechi.model.Candidato
 import aczg.grebechi.model.Empresa
+import aczg.grebechi.model.Vaga
 import aczg.grebechi.util.ConsoleUtil
 
 class ConsoleView {
     CandidatoController candidatoController = new CandidatoController()
     EmpresaController empresaController = new EmpresaController()
+    VagaController vagaController = new VagaController()
+    MatchController matchController = new MatchController()
     Scanner scanner = new Scanner(System.in)
 
     void iniciar() {
         boolean rodando = true
+        vagaController.gerarVagasIniciais(empresaController.listaEmpresas)
 
         while (rodando) {
             ConsoleUtil.limparTela()
@@ -23,6 +29,10 @@ class ConsoleView {
             println "2. Listar Empresas"
             println "3. Cadastrar Novo Candidato"
             println "4. Cadastrar Nova Empresa"
+            println "5. Listar Vagas"
+            println "6. Simular: Candidato curtir Vaga"
+            println "7. Simular: Empresa curtir Candidato"
+            println "8. Ver Matches"
             ConsoleUtil.printErro("0. Sair")
             print "\nEscolha uma opção: "
 
@@ -44,6 +54,22 @@ class ConsoleView {
                     break
                 case "4":
                     cadastrarEmpresaMenu()
+                    break
+                case "5":
+                    ConsoleUtil.limparTela()
+                    vagaController.listarVagas()
+                    ConsoleUtil.pausar(scanner)
+                    break
+                case "6":
+                    menuCandidatoCurteVaga()
+                    break
+                case "7":
+                    menuEmpresaCurteCandidato()
+                    break
+                case "8":
+                    ConsoleUtil.limparTela()
+                    matchController.listarMatches()
+                    ConsoleUtil.pausar(scanner)
                     break
                 case "0":
                     ConsoleUtil.limparTela()
@@ -96,6 +122,56 @@ class ConsoleView {
 
         empresaController.adicionarEmpresa(e)
         ConsoleUtil.printSucesso("\nEmpresa ${e.nome} cadastrada com sucesso!")
+        ConsoleUtil.pausar(scanner)
+    }
+
+    private void menuCandidatoCurteVaga() {
+        ConsoleUtil.limparTela()
+        ConsoleUtil.printTitulo("--- CANDIDATO CURTINDO VAGA ---")
+
+        candidatoController.listarCandidatos()
+        String email = lerStringValida("\nDigite o email do Candidato: ")
+        Candidato candidato = candidatoController.listaCandidatos.find { it.email == email }
+
+        if (candidato) {
+            vagaController.listarVagas()
+            Integer idVaga = lerInteiroValido("\nDigite o ID da Vaga que ele quer curtir: ")
+            Vaga vaga = vagaController.buscarVagaPorId(idVaga)
+
+            if (vaga) {
+                matchController.candidatoCurteVaga(candidato, vaga)
+                ConsoleUtil.printSucesso("O candidato curtiu a vaga!")
+            } else {
+                ConsoleUtil.printErro("Vaga não encontrada.")
+            }
+        } else {
+            ConsoleUtil.printErro("Candidato não encontrado.")
+        }
+        ConsoleUtil.pausar(scanner)
+    }
+
+    private void menuEmpresaCurteCandidato() {
+        ConsoleUtil.limparTela()
+        ConsoleUtil.printTitulo("--- EMPRESA CURTINDO CANDIDATO ---")
+
+        empresaController.listarEmpresas()
+        String cnpj = lerStringValida("\nDigite o CNPJ da Empresa: ")
+        Empresa empresa = empresaController.listaEmpresas.find { it.cnpj == cnpj }
+
+        if (empresa) {
+            candidatoController.listarCandidatos()
+            String email = lerStringValida("\nDigite o email do Candidato (perfil anônimo avaliado): ")
+            Candidato candidato = candidatoController.listaCandidatos.find { it.email == email }
+
+            if (candidato) {
+                matchController.empresaCurteCandidato(empresa, candidato)
+                ConsoleUtil.printSucesso("A empresa curtiu o candidato!")
+            } else {
+                ConsoleUtil.printErro("Candidato não encontrado.")
+            }
+        } else {
+            ConsoleUtil.printErro("Empresa não encontrada.")
+        }
         ConsoleUtil.pausar(scanner)
     }
 

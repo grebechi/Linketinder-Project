@@ -15,6 +15,12 @@ MVP de uma aplicação inspirada no LinkedIn e Tinder, focada em conectar empres
 - A lógica verifica as interações de forma independente. Quando as duas pontas demonstram interesse, o sistema emite um alerta de "Match", permitindo a quebra do anonimato.
 - Novas entidades adicionadas: `Vaga`, `Curtida`, `MatchController` e `VagaController`.
 
+## Testes Unitários (TDD e BDD)
+- Implementação de testes unitários utilizando o **Spock Framework**.
+- Abordagem baseada em BDD (Behavior-Driven Development) para descrever os comportamentos através dos blocos `given`, `when` e `then`.
+- Validação das classes de Modelo (`Candidato` e `Empresa`).
+- Testes focados na lógica de adição e persistência em memória nas classes `CandidatoController` e `EmpresaController`.
+
 ## Como executar o projeto
 1. Certifique-se de ter o Java e Groovy instalados na sua máquina ou utilize o IntelliJ IDEA com suporte a Groovy.
 2. Clone este repositório: `git clone https://github.com/grebechi/Linketinder-Project.git`

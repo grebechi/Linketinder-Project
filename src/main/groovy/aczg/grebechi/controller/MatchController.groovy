@@ -9,11 +9,15 @@ class MatchController {
     List<Curtida> historicoCurtidas = []
 
     void candidatoCurteVaga(Candidato candidato, Vaga vaga) {
-        Curtida curtida = historicoCurtidas.find { it.candidato.email == candidato.email && it.vaga.id == vaga.id }
+        Curtida curtida = historicoCurtidas.find { it.candidato.email == candidato.email && it.empresa.cnpj == vaga.empresa.cnpj }
 
         if (!curtida) {
-            curtida = new Curtida(candidato: candidato, vaga: vaga, empresa: vaga.empresa)
+            curtida = new Curtida(candidato: candidato, empresa: vaga.empresa, vaga: vaga)
             historicoCurtidas.add(curtida)
+        } else {
+            if (!curtida.vaga) {
+                curtida.vaga = vaga
+            }
         }
 
         curtida.candidatoCurtiu = true
